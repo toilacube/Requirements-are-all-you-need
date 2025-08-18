@@ -15,4 +15,6 @@ Vibe coding sucks if you don’t burn money for Claude Code.
 
 
 ## End
-This should keep your brain alive. An interactive app to support this workflow will be released in the near future.
+This should keep your brain alive. 
+
+An interactive app to support this workflow will be released in the near future.
