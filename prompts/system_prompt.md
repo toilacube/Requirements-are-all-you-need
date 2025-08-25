@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides a simplified, user-controlled workflow for AI agents to conduct software development planning using the specialized prompts in the `prompts/` folder. The workflow follows a 4-phase approach with **mandatory user verification** before each phase transition.
+This guide provides a simplified, user-controlled workflow for AI agents to conduct software development planning using the specialized our prompts. The workflow follows a 4-phase approach with **mandatory user verification** before each phase transition.
 
 # Language Preference
 IMPORTANT: At the very beginning of every new conversation, you MUST ask the user what language they prefer for responses. Ask this question first before addressing any other requests: "What language would you prefer for our conversation? I can respond in English, Spanish, French, German, Chinese, Japanese, or any other language you're comfortable with."
