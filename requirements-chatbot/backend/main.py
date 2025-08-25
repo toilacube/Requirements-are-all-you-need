@@ -1,12 +1,22 @@
 from fastapi import FastAPI
-from agent import LangGraphChatbot, ChatRequest, ChatResponse, ChatStreamRequest
+from src.agent import LangGraphChatbot, ChatRequest, ChatResponse, ChatStreamRequest
 from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
 # FastAPI application
 app = FastAPI(title="LangGraph Chatbot API")
+
+# Allow all cors
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize the chatbot
 chatbot = LangGraphChatbot()

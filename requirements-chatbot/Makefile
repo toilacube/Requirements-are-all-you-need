@@ -16,23 +16,23 @@ init-backend:
 	cd $(BACKEND_DIR) && poetry install
 
 run-backend:
-	cd $(BACKEND_DIR) && $(UVICORN) backend.main:app --reload --host 0.0.0.0 --port $(BACKEND_PORT)
+	cd $(BACKEND_DIR) && $(UVICORN) main:app --reload --host 0.0.0.0 --port $(BACKEND_PORT)
 
 # ==========
 # Frontend
 # ==========
 init-frontend:
-	cd $(FRONTEND_DIR) && npm install
+	cd $(FRONTEND_DIR) && pnpm install
 
 run-frontend:
-	cd $(FRONTEND_DIR) && npm run dev -- --port $(FRONTEND_PORT)
+	cd $(FRONTEND_DIR) && pnpm run dev -- --port $(FRONTEND_PORT)
 
 # ==========
 # Combined
 # ==========
 init: init-backend init-frontend
 
-run: 
+run:
 	@echo "🚀 Starting backend and frontend..."
 	@$(MAKE) -j2 run-backend run-frontend
 

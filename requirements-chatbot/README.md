@@ -8,7 +8,7 @@
    ```
 
    * Creates Python venv → installs FastAPI dependencies
-   * Installs frontend deps (`npm install`)
+   * Installs frontend deps (`pnpm install`)
 
 2. **Run locally (both backend + frontend)**
 
@@ -17,7 +17,7 @@
    ```
 
    * Starts FastAPI (`uvicorn`) on `http://localhost:8000`
-   * Starts Vite (`npm run dev`) on `http://localhost:5173`
+   * Starts Vite (`pnpm run dev`) on `http://localhost:5173`
 
 3. **Clean everything**
 
