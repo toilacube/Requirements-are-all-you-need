@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["toilacube <151115rubikcube@gmail.com>"]
+package-mode = false
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+fastapi = ">=0.116.1,<0.117.0"
+uvicorn = {extras = ["standard"], version = ">=0.35.0,<0.36.0"}
+langgraph = "^0.6.6"
+langsmith = "^0.4.16"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
