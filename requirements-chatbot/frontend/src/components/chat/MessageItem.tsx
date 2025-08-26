@@ -1,6 +1,7 @@
 import type { ChatMessage } from '../../services/chatService';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { cn } from '../../lib/utils';
+import Markdown from 'react-markdown'
 
 interface MessageItemProps {
   message: ChatMessage;
@@ -29,7 +30,7 @@ export const MessageItem = ({ message }: MessageItemProps) => {
           : "bg-muted text-muted-foreground"
       )}>
         <div className="whitespace-pre-wrap break-words">
-          {message.content}
+          <Markdown>{message.content}</Markdown>
         </div>
         <div className={cn(
           "text-xs mt-1 opacity-70",
