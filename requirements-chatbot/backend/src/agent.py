@@ -1,23 +1,23 @@
-
 from typing import Annotated, List, Dict, Any, AsyncIterator
 from typing_extensions import TypedDict
 
 from fastapi import HTTPException
 from pydantic import BaseModel
 import json
-
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, AIMessage
+from langchain_tavily import TavilySearch
+from .graph_node import BasicToolNode
+from .gemini_langsmith_wrapper import wrap_gemini
 
-GEMINI_FLASH="google_genai:gemini-2.0-flash"
+GEMINI_FLASH="gemini-2.0-flash"
 MODEL=GEMINI_FLASH
 
 class State(TypedDict):
     messages: Annotated[list, add_messages]
-    requirement: str # default update to replace
-
 
 class ChatMessage(BaseModel):
     role: str  # "user" or "assistant"
@@ -42,18 +42,48 @@ class ChatResponse(BaseModel):
 
 class LangGraphChatbot:
     def __init__(self, model_name: str = MODEL):
-        self.llm = init_chat_model(model_name)
+        self.llm = wrap_gemini(ChatGoogleGenerativeAI(
+            model=model_name,
+            temperature=0.5,
+            max_retries=2,
+            )).bind_tools(self._init_tools())
+        self.tool_node = BasicToolNode(self._init_tools())  
         self.graph = self._build_graph()
     
     def _build_graph(self) -> StateGraph:
         graph_builder = StateGraph(State)
         
         graph_builder.add_node("chatbot", self._chatbot_node)
+        graph_builder.add_node("tools", self.tool_node) 
+        
+        graph_builder.add_conditional_edges(
+            "chatbot",
+            self._route_tools,
+            {
+                "tools": "tools",
+                END: END,
+            },
+        )
         
         graph_builder.add_edge(START, "chatbot")
-        graph_builder.add_edge("chatbot", END)
+        graph_builder.add_edge("tools", "chatbot")
         
         return graph_builder.compile()
+    
+    def _init_tools(self) -> List:
+        search_tool = TavilySearch(max_results=1)
+        return [search_tool]
+    
+    def _route_tools(self, state: State):
+        if isinstance(state, list):
+            ai_message = state[-1]
+        elif messages := state.get("messages", []):
+            ai_message = messages[-1]
+        else:
+            raise ValueError(f"No messages found in input state to tool_edge: {state}")
+        if hasattr(ai_message, "tool_calls") and len(ai_message.tool_calls) > 0:
+            return "tools"
+        return END
     
     def _chatbot_node(self, state: State) -> Dict[str, Any]:
         response = self.llm.invoke(state["messages"])
